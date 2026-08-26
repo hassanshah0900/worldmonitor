@@ -1,0 +1,51 @@
+name: Deployment Workflow for Learning Branch
+on: 
+  push:
+    branches: [learning]
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: actions/setup-buildx-action@v3
+    
+    - name: Log in to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Build and Push World Monitor Web App
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:${{ github.sha }}
+
+
+    - name: Build and Push Redis REST Proxy
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile.redis-rest
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-redis-rest:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-redis-rest:${{ github.sha }}
+
+    - name: Build and Push AIS Relay Worker
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile.relay
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-relay:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-relay:${{ github.sha }}
+

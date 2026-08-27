@@ -3,7 +3,7 @@
 # Docker Hub repository. This is read-only scanning; it doesn't change
 # anything by itself. The corresponding ImagePolicy (image-policies.yaml)
 # is what picks a "latest" tag out of what gets scanned here.
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: worldmonitor-full
@@ -12,7 +12,7 @@ spec:
   image: docker.io/syedhassan/worldmonitor
   interval: 5m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: worldmonitor-tech
@@ -21,7 +21,7 @@ spec:
   image: docker.io/syedhassan/worldmonitor-tech
   interval: 5m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: worldmonitor-finance
@@ -30,7 +30,7 @@ spec:
   image: docker.io/syedhassan/worldmonitor-finance
   interval: 5m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: worldmonitor-happy
@@ -39,7 +39,7 @@ spec:
   image: docker.io/syedhassan/worldmonitor-happy
   interval: 5m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: worldmonitor-commodity
@@ -48,7 +48,7 @@ spec:
   image: docker.io/syedhassan/worldmonitor-commodity
   interval: 5m
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: worldmonitor-energy

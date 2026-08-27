@@ -10,12 +10,7 @@
 # here, so image-automation-controller commits back through the same
 # credentials Flux already uses to reconcile this repo.
 #
-# apiVersion below is unverified against a live Flux install — this
-# environment has no network access to check the CRD versions
-# `flux bootstrap` would actually install. Confirm against
-# `kubectl explain imageupdateautomation` (or the Flux docs) once a
-# real cluster exists, before applying.
-apiVersion: image.toolkit.fluxcd.io/v1beta1
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageUpdateAutomation
 metadata:
   name: worldmonitor

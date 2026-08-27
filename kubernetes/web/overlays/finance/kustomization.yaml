@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+nameSuffix: -finance
+
+# includeSelectors: true wires this label into the Deployment's
+# matchLabels + pod template AND the Service's selector — without it,
+# every variant's pods would carry identical labels and each variant's
+# Service would ambiguously match all six variants' pods.
+labels:
+  - pairs:
+      app.kubernetes.io/instance: finance
+    includeSelectors: true
+
+images:
+  # Matches the worldmonitor-finance:latest tag learning-deployment.yml
+  # pushes for DASHBOARD_VARIANT=finance. Change newName/newTag below to point at a
+  # different image, or override it at apply time with: kustomize edit set image
+  # worldmonitor=<user>/worldmonitor-finance:<tag>
+  - name: worldmonitor
+    newName: syedhassan/worldmonitor-finance
+    newTag: latest

@@ -16,10 +16,18 @@ labels:
     includeSelectors: true
 
 images:
-  # Matches the worldmonitor:latest tag learning-deployment.yml pushes
-  # for DASHBOARD_VARIANT=full. Change newName/newTag below to point at
-  # a different image, or override it at apply time with:
-  # kustomize edit set image worldmonitor=<user>/worldmonitor:<tag>
+  # newTag is deliberately not "latest" — a mutable tag defeats
+  # kubectl rollout undo, since the previous ReplicaSet's pod template
+  # would just re-resolve to whatever "latest" points to *now*, not
+  # what was actually running before.
+  #
+  # newTag's value here is managed by Flux's image-automation-controller
+  # (see kubernetes/flux/), not hand-edited: the $imagepolicy marker
+  # comment tells it to overwrite just this field with whatever tag
+  # the worldmonitor-full ImagePolicy currently resolves to, then commit
+  # that change to this file. "pending-ci" is an intentionally invalid
+  # placeholder — ImagePullBackOff until Flux's automation runs at least
+  # once against a real pushed image.
   - name: worldmonitor
     newName: syedhassan/worldmonitor
-    newTag: latest
+    newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-full:tag"}

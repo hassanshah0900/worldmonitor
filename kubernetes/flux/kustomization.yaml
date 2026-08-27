@@ -1,0 +1,35 @@
+# Flux's own controllers (source-controller, kustomize-controller,
+# image-reflector-controller, image-automation-controller) are NOT
+# vendored here — they're installed and self-managed by `flux bootstrap`,
+# which also creates the flux-system namespace, the GitRepository this
+# ImageUpdateAutomation references, and writes its own component
+# manifests into this repo under kubernetes/flux-system/ (a path Flux
+# itself owns; don't hand-edit it).
+#
+# One-time bootstrap (run once, from a machine with the `flux` CLI and
+# a GitHub personal access token with repo scope — see
+# https://fluxcd.io/flux/installation/ for current flags):
+#
+#   export GITHUB_TOKEN=<personal-access-token>
+#   flux bootstrap github \
+#     --owner=<your-github-username> \
+#     --repository=worldmonitor \
+#     --branch=learning \
+#     --path=kubernetes/flux-system \
+#     --personal
+#
+# After bootstrap, apply the resources in this directory so Flux starts
+# managing the image-update loop:
+#
+#   kubectl apply -k kubernetes/flux
+#
+# From that point on, dashboard image tags in kubernetes/web/overlays
+# are written by Flux, not by hand or by learning-deployment.yml — see
+# the $imagepolicy marker comments in each overlay's kustomization.yaml.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - image-repositories.yaml
+  - image-policies.yaml
+  - image-update-automation.yaml

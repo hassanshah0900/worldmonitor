@@ -1,0 +1,58 @@
+# One ImageRepository per dashboard variant — each tells Flux's
+# image-reflector-controller to periodically list the tags of that
+# Docker Hub repository. This is read-only scanning; it doesn't change
+# anything by itself. The corresponding ImagePolicy (image-policies.yaml)
+# is what picks a "latest" tag out of what gets scanned here.
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: worldmonitor-full
+  namespace: flux-system
+spec:
+  image: docker.io/syedhassan/worldmonitor
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: worldmonitor-tech
+  namespace: flux-system
+spec:
+  image: docker.io/syedhassan/worldmonitor-tech
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: worldmonitor-finance
+  namespace: flux-system
+spec:
+  image: docker.io/syedhassan/worldmonitor-finance
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: worldmonitor-happy
+  namespace: flux-system
+spec:
+  image: docker.io/syedhassan/worldmonitor-happy
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: worldmonitor-commodity
+  namespace: flux-system
+spec:
+  image: docker.io/syedhassan/worldmonitor-commodity
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: worldmonitor-energy
+  namespace: flux-system
+spec:
+  image: docker.io/syedhassan/worldmonitor-energy
+  interval: 5m

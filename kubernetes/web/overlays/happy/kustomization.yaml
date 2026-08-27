@@ -16,10 +16,9 @@ labels:
     includeSelectors: true
 
 images:
-  # Matches the worldmonitor-happy:latest tag learning-deployment.yml
-  # pushes for DASHBOARD_VARIANT=happy. Change newName/newTag below to point at a
-  # different image, or override it at apply time with: kustomize edit set image
-  # worldmonitor=<user>/worldmonitor-happy:<tag>
+  # newTag is managed by Flux's image-automation-controller, not
+  # hand-edited — see overlays/full/kustomization.yaml for why, and
+  # kubernetes/flux/ for the controller config.
   - name: worldmonitor
     newName: syedhassan/worldmonitor-happy
-    newTag: latest
+    newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-happy:tag"}

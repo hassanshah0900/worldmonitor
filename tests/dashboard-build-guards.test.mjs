@@ -121,10 +121,13 @@ describe('built-output guard contract', () => {
       '        run: npm run build:pro',
       '      - name: Build dashboard artifacts for built-output tests',
       '        run: VITE_VARIANT=full ./node_modules/.bin/vite build',
-      '      - name: Client bundle size budget (#7111)',
+      '      - name: Client bundle size budget (#7111, #7119)',
     ].join('\n');
     const expectedTailSequence = [
-      '        run: npm run bundle:check',
+      '        run: |',
+      '          npm run bundle:check',
+      '          npm run bundle:check:pro',
+      '          npm run bundle:check:embed',
       '      - run: WM_EXPECT_BUILT_OUTPUT=1 npm run test:data',
     ].join('\n');
 
@@ -171,6 +174,28 @@ describe('built-output guard contract', () => {
       source,
       /guardBuiltOutput\(PRO_BUILT_MARKER/,
       'guardProBuiltOutput must ask the shared primitive about the /pro marker',
+    );
+
+    const sentrySource = readFileSync(resolve(repoRoot, 'tests/pro-sentry-chunk.test.mjs'), 'utf8');
+    assert.match(
+      sentrySource,
+      /from '\.\/_lib\/built-output-guard\.mjs'/,
+      'the pro Sentry chunk suite must use the shared built-output primitive',
+    );
+    assert.match(
+      sentrySource,
+      /skip: shouldSkipBuiltOutput\(ASSETS_DIR\)/,
+      'the pro Sentry chunk suite must skip specifically when public/pro/assets is absent',
+    );
+    assert.match(
+      sentrySource,
+      /guardBuiltOutput\(ASSETS_DIR, undefined, REBUILD_HINT\)/,
+      'the pro Sentry chunk suite must fail closed on the same assets path when CI expects built output',
+    );
+    assert.match(
+      sentrySource,
+      /Run `npm run build:pro` first/,
+      'the pro Sentry chunk failure must name the /pro build command',
     );
   });
 

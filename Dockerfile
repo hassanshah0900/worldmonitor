@@ -32,9 +32,19 @@ RUN node scripts/generate-inventory-facts.mjs
 # build:pro installs pro-test's own lockfile.
 RUN npm run build:pro
 
+ARG DASHBOARD_VARIANT=full
+# Fail loud on a typo'd variant: vite.config.ts silently falls back to the
+# 'full' VARIANT_META for any unrecognized VITE_VARIANT value, which would
+# otherwise bake a full-branded dashboard under whatever tag this variant
+# was meant to get, with no build-time signal that anything went wrong.
+RUN case "$DASHBOARD_VARIANT" in \
+      full|tech|finance|happy|commodity|energy) ;; \
+      *) echo "Unknown DASHBOARD_VARIANT: $DASHBOARD_VARIANT" >&2; exit 1 ;; \
+    esac
+
 # Build the crawlable static corpus and Vite frontend (outputs to dist/)
 # Skip blog build — blog-site has its own deps not installed here
-RUN npm run build:crawlable-corpus && npm run build:sitemap && npx tsc && npx vite build
+RUN npm run build:crawlable-corpus && npm run build:sitemap && npx tsc && VITE_VARIANT=${DASHBOARD_VARIANT} npx vite build
 # Assert the /pro pages survived the public/ -> dist/ copy (#6898). build:pro
 # succeeding proves public/pro/ exists; it does NOT prove Vite copied it, and
 # docker/nginx.conf's SPA fallback would serve the dashboard shell at 200 for a

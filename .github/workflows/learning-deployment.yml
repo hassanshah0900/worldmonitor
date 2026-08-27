@@ -18,16 +18,77 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-    - name: Build and Push World Monitor Web App
+    - name: Build and Push Worldmonitor Dashboard (full)
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
         push: true
+        build-args: |
+          DASHBOARD_VARIANT=full
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:${{ github.sha }}
 
+    - name: Build and Push Worldmonitor Dashboard (tech)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=tech
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (finance)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=finance
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (happy)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=happy
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (commodity)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=commodity
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (energy)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=energy
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:${{ github.sha }}
 
     - name: Build and Push Redis REST Proxy
       uses: docker/build-push-action@v6

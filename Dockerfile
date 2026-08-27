@@ -23,10 +23,6 @@ COPY . .
 # the clean image context before handlers import or bundle them.
 RUN node scripts/generate-inventory-facts.mjs
 
-# Compile TypeScript API handlers → self-contained ESM bundles
-# Output is api/**/*.js alongside the source .ts files
-RUN node docker/build-handlers.mjs
-
 # public/pro/ is a build product, not committed bytes (#6898), so this image has
 # to build it. Skipping it does NOT 404: this image installs docker/nginx.conf,
 # whose `location /` ends in `try_files $uri $uri/ /dashboard.html`,
@@ -36,14 +32,34 @@ RUN node docker/build-handlers.mjs
 # build:pro installs pro-test's own lockfile.
 RUN npm run build:pro
 
+ARG DASHBOARD_VARIANT=full
+# Fail loud on a typo'd variant: vite.config.ts silently falls back to the
+# 'full' VARIANT_META for any unrecognized VITE_VARIANT value, which would
+# otherwise bake a full-branded dashboard under whatever tag this variant
+# was meant to get, with no build-time signal that anything went wrong.
+RUN case "$DASHBOARD_VARIANT" in \
+      full|tech|finance|happy|commodity|energy) ;; \
+      *) echo "Unknown DASHBOARD_VARIANT: $DASHBOARD_VARIANT" >&2; exit 1 ;; \
+    esac
+
 # Build the crawlable static corpus and Vite frontend (outputs to dist/)
 # Skip blog build — blog-site has its own deps not installed here
-RUN npm run build:crawlable-corpus && npm run build:sitemap && npx tsc && npx vite build
+RUN npm run build:crawlable-corpus && npm run build:sitemap && npx tsc && VITE_VARIANT=${DASHBOARD_VARIANT} npx vite build
 # Assert the /pro pages survived the public/ -> dist/ copy (#6898). build:pro
 # succeeding proves public/pro/ exists; it does NOT prove Vite copied it, and
 # docker/nginx.conf's SPA fallback would serve the dashboard shell at 200 for a
 # missing /pro rather than failing visibly.
 RUN test -s dist/pro/index.html && test -s dist/pro/welcome.html
+
+# Compile TypeScript API handlers → self-contained ESM bundles
+# Output is api/**/*.js alongside the source .ts files
+# Must run AFTER build:crawlable-corpus above: that step's source-attribution
+# audit lexically scans api/**/*.{js,ts} for upstream URL literals and diffs
+# them against the committed manifest. Bundling first would inline every
+# dependency's URL literals into fresh api/**/*.js files the manifest was
+# never written against, making the audit fail with "stale manifest" errors
+# for nearly every host even though nothing about the actual sources changed.
+RUN node docker/build-handlers.mjs
 
 # ── Stage 2: Runtime dependencies ───────────────────────────────────────────
 FROM node:24-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS runtime-deps

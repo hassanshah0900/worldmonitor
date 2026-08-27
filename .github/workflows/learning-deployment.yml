@@ -94,7 +94,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: ./docker
-        file: ./Dockerfile.redis-rest
+        file: ./docker/Dockerfile.redis-rest
         push: true
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-redis-rest:latest

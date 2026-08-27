@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+nameSuffix: -commodity
+
+# includeSelectors: true wires this label into the Deployment's
+# matchLabels + pod template AND the Service's selector — without it,
+# every variant's pods would carry identical labels and each variant's
+# Service would ambiguously match all six variants' pods.
+labels:
+  - pairs:
+      app.kubernetes.io/instance: commodity
+    includeSelectors: true
+
+images:
+  # newTag is managed by Flux's image-automation-controller, not
+  # hand-edited — see overlays/full/kustomization.yaml for why, and
+  # kubernetes/flux/ for the controller config.
+  - name: worldmonitor
+    newName: syedhassan/worldmonitor-commodity
+    newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-commodity:tag"}

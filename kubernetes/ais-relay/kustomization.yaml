@@ -1,0 +1,14 @@
+# Single shared instance — no variant overlays. See memory: all six
+# dashboard variants point at this one relay (kubernetes/web/shared
+# configures WS_RELAY_URL against this Service's name).
+#
+#   kubectl apply -k kubernetes/ais-relay
+#
+# secret.example.yaml is a template, not a resource here — see its header.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml

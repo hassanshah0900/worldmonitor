@@ -1,5 +1,5 @@
 name: Deployment Workflow for Learning Branch
-on: 
+on:
   push:
     branches: [learning]
 jobs:
@@ -29,6 +29,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:${{ github.run_number }}-${{ github.sha }}
 
     - name: Build and Push Worldmonitor Dashboard (tech)
       uses: docker/build-push-action@v6
@@ -41,6 +42,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:${{ github.run_number }}-${{ github.sha }}
 
     - name: Build and Push Worldmonitor Dashboard (finance)
       uses: docker/build-push-action@v6
@@ -53,6 +55,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:${{ github.run_number }}-${{ github.sha }}
 
     - name: Build and Push Worldmonitor Dashboard (happy)
       uses: docker/build-push-action@v6
@@ -65,6 +68,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:${{ github.run_number }}-${{ github.sha }}
 
     - name: Build and Push Worldmonitor Dashboard (commodity)
       uses: docker/build-push-action@v6
@@ -77,6 +81,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:${{ github.run_number }}-${{ github.sha }}
 
     - name: Build and Push Worldmonitor Dashboard (energy)
       uses: docker/build-push-action@v6
@@ -89,12 +94,13 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:latest
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:${{ github.run_number }}-${{ github.sha }}
 
     - name: Build and Push Redis REST Proxy
       uses: docker/build-push-action@v6
       with:
         context: ./docker
-        file: ./Dockerfile.redis-rest
+        file: ./docker/Dockerfile.redis-rest
         push: true
         tags: |
           ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-redis-rest:latest

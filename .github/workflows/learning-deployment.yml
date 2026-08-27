@@ -93,7 +93,7 @@ jobs:
     - name: Build and Push Redis REST Proxy
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: ./docker
         file: ./Dockerfile.redis-rest
         push: true
         tags: |

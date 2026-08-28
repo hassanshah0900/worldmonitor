@@ -19,7 +19,6 @@ spec:
     spec:
       containers:
         - name: worldmonitor
-          # Placeholder — every overlay replaces this via the images: transformer.
           image: worldmonitor:latest
           ports:
             - name: http

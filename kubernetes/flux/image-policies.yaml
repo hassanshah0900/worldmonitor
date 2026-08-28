@@ -1,16 +1,3 @@
-# One ImagePolicy per variant — decides which scanned tag counts as
-# "newest" for its ImageRepository (image-repositories.yaml).
-#
-# Tags are git commit SHAs (hex), which don't sort chronologically as
-# strings, so a semver or alphabetical policy can't pick a meaningful
-# "latest" out of them. learning-deployment.yml also pushes a third tag
-# per image shaped "<run_number>-<sha>", where run_number is GitHub
-# Actions' own strictly-incrementing per-workflow counter
-# (github.run_number) — filterTags extracts just that numeric prefix,
-# and the numerical policy orders on it, while the tag Flux actually
-# writes back into the overlay (newTag's resolved value) keeps the full
-# "<run_number>-<sha>" string, so the commit is still visible in
-# `kubectl describe` / `git log` on the overlay.
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:

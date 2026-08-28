@@ -21,7 +21,7 @@ spec:
         - name: ais-relay
           # Built from Dockerfile.relay — see
           # .github/workflows/learning-deployment.yml for the build step.
-          image: syedhassan/worldmonitor-relay:latest
+          image: syedhassanshah/worldmonitor-relay:latest
           ports:
             - name: http
               containerPort: 3004

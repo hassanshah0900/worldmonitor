@@ -21,7 +21,7 @@ spec:
         - name: redis-rest
           # Built from docker/Dockerfile.redis-rest — see
           # .github/workflows/learning-deployment.yml for the build step.
-          image: syedhassan/worldmonitor-redis-rest:latest
+          image: syedhassanshah/worldmonitor-redis-rest:latest
           ports:
             - name: http
               containerPort: 80

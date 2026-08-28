@@ -9,7 +9,7 @@ metadata:
   name: worldmonitor-full
   namespace: flux-system
 spec:
-  image: docker.io/syedhassan/worldmonitor
+  image: docker.io/syedhassanshah/worldmonitor
   interval: 5m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -18,7 +18,7 @@ metadata:
   name: worldmonitor-tech
   namespace: flux-system
 spec:
-  image: docker.io/syedhassan/worldmonitor-tech
+  image: docker.io/syedhassanshah/worldmonitor-tech
   interval: 5m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -27,7 +27,7 @@ metadata:
   name: worldmonitor-finance
   namespace: flux-system
 spec:
-  image: docker.io/syedhassan/worldmonitor-finance
+  image: docker.io/syedhassanshah/worldmonitor-finance
   interval: 5m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -36,7 +36,7 @@ metadata:
   name: worldmonitor-happy
   namespace: flux-system
 spec:
-  image: docker.io/syedhassan/worldmonitor-happy
+  image: docker.io/syedhassanshah/worldmonitor-happy
   interval: 5m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -45,7 +45,7 @@ metadata:
   name: worldmonitor-commodity
   namespace: flux-system
 spec:
-  image: docker.io/syedhassan/worldmonitor-commodity
+  image: docker.io/syedhassanshah/worldmonitor-commodity
   interval: 5m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -54,5 +54,5 @@ metadata:
   name: worldmonitor-energy
   namespace: flux-system
 spec:
-  image: docker.io/syedhassan/worldmonitor-energy
+  image: docker.io/syedhassanshah/worldmonitor-energy
   interval: 5m

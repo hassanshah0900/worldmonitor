@@ -29,5 +29,5 @@ images:
   # placeholder — ImagePullBackOff until Flux's automation runs at least
   # once against a real pushed image.
   - name: worldmonitor
-    newName: syedhassan/worldmonitor
+    newName: syedhassanshah/worldmonitor
     newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-full:tag"}

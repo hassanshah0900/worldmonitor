@@ -20,5 +20,5 @@ images:
   # hand-edited — see overlays/full/kustomization.yaml for why, and
   # kubernetes/flux/ for the controller config.
   - name: worldmonitor
-    newName: syedhassan/worldmonitor-energy
+    newName: syedhassanshah/worldmonitor-energy
     newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-energy:tag"}

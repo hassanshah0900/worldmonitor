@@ -1,0 +1,15 @@
+# Single shared instance — no variant overlays. See memory: all six
+# dashboard variants point at this one redis (kubernetes/web/shared
+# configures UPSTASH_REDIS_REST_URL against the redis-rest Service, which
+# in turn talks to this Service by name).
+#
+#   kubectl apply -k kubernetes/redis
+#
+# secret.example.yaml is a template, not a resource here — see its header.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - pvc.yaml

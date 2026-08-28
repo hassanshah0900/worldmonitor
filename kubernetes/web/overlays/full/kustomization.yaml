@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+nameSuffix: -full
+
+# includeSelectors: true wires this label into the Deployment's
+# matchLabels + pod template AND the Service's selector — without it,
+# every variant's pods would carry identical labels and each variant's
+# Service would ambiguously match all six variants' pods.
+labels:
+  - pairs:
+      app.kubernetes.io/instance: full
+    includeSelectors: true
+
+images:
+  # newTag is deliberately not "latest" — a mutable tag defeats
+  # kubectl rollout undo, since the previous ReplicaSet's pod template
+  # would just re-resolve to whatever "latest" points to *now*, not
+  # what was actually running before.
+  #
+  # newTag's value here is managed by Flux's image-automation-controller
+  # (see kubernetes/flux/), not hand-edited: the $imagepolicy marker
+  # comment tells it to overwrite just this field with whatever tag
+  # the worldmonitor-full ImagePolicy currently resolves to, then commit
+  # that change to this file. "pending-ci" is an intentionally invalid
+  # placeholder — ImagePullBackOff until Flux's automation runs at least
+  # once against a real pushed image.
+  - name: worldmonitor
+    newName: syedhassan/worldmonitor
+    newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-full:tag"}

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ais-relay
+  labels:
+    app.kubernetes.io/name: ais-relay
+    app.kubernetes.io/component: relay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ais-relay
+      app.kubernetes.io/component: relay
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ais-relay
+        app.kubernetes.io/component: relay
+    spec:
+      containers:
+        - name: ais-relay
+          # Built from Dockerfile.relay — see
+          # .github/workflows/learning-deployment.yml for the build step.
+          image: syedhassan/worldmonitor-relay:latest
+          ports:
+            - name: http
+              containerPort: 3004
+          envFrom:
+            - configMapRef:
+                name: ais-relay-config
+            - secretRef:
+                name: ais-relay-secrets
+          # /health is a public (unauthenticated) route in ais-relay.cjs —
+          # safe to probe with httpGet, unlike redis-rest.
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 256Mi

@@ -1,0 +1,118 @@
+name: Deployment Workflow for Learning Branch
+on:
+  push:
+    branches: [learning]
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Log in to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Build and Push Worldmonitor Dashboard (full)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=full
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor:${{ github.run_number }}-${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (tech)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=tech
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-tech:${{ github.run_number }}-${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (finance)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=finance
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-finance:${{ github.run_number }}-${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (happy)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=happy
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-happy:${{ github.run_number }}-${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (commodity)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=commodity
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-commodity:${{ github.run_number }}-${{ github.sha }}
+
+    - name: Build and Push Worldmonitor Dashboard (energy)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        build-args: |
+          DASHBOARD_VARIANT=energy
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:${{ github.sha }}
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-energy:${{ github.run_number }}-${{ github.sha }}
+
+    - name: Build and Push Redis REST Proxy
+      uses: docker/build-push-action@v6
+      with:
+        context: ./docker
+        file: ./docker/Dockerfile.redis-rest
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-redis-rest:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-redis-rest:${{ github.sha }}
+
+    - name: Build and Push AIS Relay Worker
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile.relay
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-relay:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/worldmonitor-relay:${{ github.sha }}
+

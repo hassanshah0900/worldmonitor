@@ -1,7 +1,8 @@
 # Cluster-scoped (not namespaced) — these back the
 # cert-manager.io/cluster-issuer annotation on kubernetes/dashboard/shared's
-# Ingress. Requires cert-manager already installed (see kustomization.yaml
-# in this directory for the install command).
+# Ingress. cert-manager is installed via ../helm's HelmRelease; the
+# cluster-infra-issuers Flux Kustomization depends on cluster-infra-helm
+# so this only applies once cert-manager's CRDs exist.
 #
 # HTTP-01 challenge, not DNS-01: no DNS-provider API credentials needed,
 # but it does require the ingress-nginx controller's Service to be

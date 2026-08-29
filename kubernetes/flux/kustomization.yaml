@@ -6,4 +6,6 @@ resources:
   - image-repositories.yaml
   - image-policies.yaml
   - image-update-automation.yaml
+  - cluster-infra-helm-sync.yaml
+  - cluster-infra-issuers-sync.yaml
   - dashboard-sync.yaml

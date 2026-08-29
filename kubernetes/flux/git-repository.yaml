@@ -1,0 +1,12 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: worldmonitor
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: kubernetes
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/hassanshah0900/worldmonitor

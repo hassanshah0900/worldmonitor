@@ -4,7 +4,8 @@
 #
 #   kubectl apply -k kubernetes/ais-relay
 #
-# secret.example.yaml is a template, not a resource here — see its header.
+# secret.example.yaml is no longer applied manually — external-secret.yaml
+# fetches these values from AWS Secrets Manager instead. See its header.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -12,3 +13,4 @@ resources:
   - deployment.yaml
   - service.yaml
   - configmap.yaml
+  - external-secret.yaml

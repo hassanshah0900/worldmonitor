@@ -8,4 +8,8 @@ resources:
   - image-update-automation.yaml
   - cluster-infra-helm-sync.yaml
   - cluster-infra-issuers-sync.yaml
+  - cluster-infra-secret-store-sync.yaml
+  - ais-relay-sync.yaml
+  - redis-sync.yaml
+  - redis-rest-sync.yaml
   - dashboard-sync.yaml

@@ -11,7 +11,7 @@ spec:
   git:
     checkout:
       ref:
-        branch: learning
+        branch: kubernetes
     commit:
       author:
         name: fluxcdbot
@@ -21,7 +21,7 @@ spec:
 
         {{ range .Updated.Images }}{{ println . }}{{ end }}
     push:
-      branch: learning
+      branch: kubernetes
   update:
-    path: ./kubernetes/web/overlays
+    path: ./kubernetes/dashboard/overlays
     strategy: Setters

@@ -1,5 +1,5 @@
 # Single shared instance — no variant overlays. See memory: all six
-# dashboard variants point at this one redis (kubernetes/web/shared
+# dashboard variants point at this one redis (kubernetes/dashboard/shared
 # configures UPSTASH_REDIS_REST_URL against the redis-rest Service, which
 # in turn talks to this Service by name).
 #

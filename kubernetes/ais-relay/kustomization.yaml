@@ -1,5 +1,5 @@
 # Single shared instance — no variant overlays. See memory: all six
-# dashboard variants point at this one relay (kubernetes/web/shared
+# dashboard variants point at this one relay (kubernetes/dashboard/shared
 # configures WS_RELAY_URL against this Service's name).
 #
 #   kubectl apply -k kubernetes/ais-relay

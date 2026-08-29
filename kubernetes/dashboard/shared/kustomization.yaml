@@ -10,7 +10,7 @@
 # kubernetes/cluster-infra (cert-manager + the ClusterIssuers it
 # references) and the ingress-nginx controller itself are installed:
 #
-#   kubectl apply -k kubernetes/web/shared
+#   kubectl apply -k kubernetes/dashboard/shared
 #
 # secret.example.yaml is a template, not a resource here — see its header.
 apiVersion: kustomize.config.k8s.io/v1beta1

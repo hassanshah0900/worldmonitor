@@ -1,5 +1,5 @@
 # Cluster-wide infrastructure, installed once per cluster — not specific
-# to worldmonitor, and not scoped to any one namespace like web/redis/
+# to worldmonitor, and not scoped to any one namespace like dashboard/redis/
 # redis-rest/ais-relay are. Nothing here is namespaced.
 #
 # Before applying cluster-issuer.yaml, both of these controllers must

@@ -19,7 +19,7 @@ spec:
       messageTemplate: |
         chore(kubernetes): automated image update [skip ci]
 
-        {{ range .Updated.Images }}{{ println . }}{{ end }}
+        {{ range .Changed.Changes }}{{ println .OldValue " -> " .NewValue }}{{ end }}
     push:
       branch: kubernetes
   update:

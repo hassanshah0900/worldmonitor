@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: learning
+    branch: kubernetes
   secretRef:
     name: flux-system
   url: ssh://git@github.com/hassanshah0900/worldmonitor

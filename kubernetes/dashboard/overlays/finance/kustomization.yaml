@@ -1,17 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 resources:
   - ../../base
-
 nameSuffix: -finance
-
 labels:
   - pairs:
       app.kubernetes.io/instance: finance
     includeSelectors: true
-
 images:
   - name: worldmonitor
     newName: syedhassanshah/worldmonitor-finance
-    newTag: pending-ci # {"$imagepolicy": "flux-system:worldmonitor-finance:tag"}
+    newTag: 10-58a53baa7d823c0a5470207dc3747b1d949ca9d7 # {"$imagepolicy": "flux-system:worldmonitor-finance:tag"}

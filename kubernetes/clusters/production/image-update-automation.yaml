@@ -23,5 +23,5 @@ spec:
     push:
       branch: kubernetes
   update:
-    path: ./kubernetes/dashboard/overlays
+    path: ./kubernetes/apps/dashboard/overlays
     strategy: Setters

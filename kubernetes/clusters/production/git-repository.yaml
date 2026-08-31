@@ -10,3 +10,4 @@ spec:
   secretRef:
     name: flux-system
   url: ssh://git@github.com/hassanshah0900/worldmonitor
+  

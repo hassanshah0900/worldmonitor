@@ -67,3 +67,38 @@ spec:
         kind: HelmRepository
         name: external-secrets
         namespace: flux-system
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cluster-autoscaler
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  targetNamespace: kube-system
+  chart:
+    spec:
+      chart: cluster-autoscaler
+      # Chart 9.37.0 -> appVersion 1.30.0. Keep this matched to
+      # terraform/environments/production's kubernetes_version — cluster-autoscaler
+      # only supports a small skew from the control-plane's k8s version.
+      version: 9.37.0
+      sourceRef:
+        kind: HelmRepository
+        name: autoscaler
+        namespace: flux-system
+  values:
+    cloudProvider: aws
+    # Must match terraform/environments/production's aws_region.
+    awsRegion: us-east-1
+    autoDiscovery:
+      # Must match local.cluster_name ("${var.project}-${var.environment}")
+      # in terraform/modules/workers/main.tf — this is how the ASG tag
+      # k8s.io/cluster-autoscaler/<name>=owned gets discovered.
+      clusterName: worldmonitor-production
+    # No OIDC/IRSA on a self-managed cluster — AWS credentials come from the
+    # worker node's EC2 instance profile (terraform/modules/workers), which
+    # already carries the scoped autoscaling IAM policy.
+    rbac:
+      serviceAccount:
+        create: true

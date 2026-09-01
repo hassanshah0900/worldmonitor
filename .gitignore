@@ -134,6 +134,16 @@ tmp/
 # Local planning documents (not for public repo)
 docs/plans/
 docs/brainstorms/
+
+# Terraform state, provider caches, and per-operator config (see
+# terraform/environments/*/backend.hcl.example, terraform.tfvars.example)
+.terraform/
+.terraform.tfstate.lock.info
+*.tfstate
+*.tfstate.*
+terraform/**/backend.hcl
+terraform/**/terraform.tfvars
+terraform/**/*.tfplan
 playground-pricing.html
 
 # Generated at build time by scripts/generate-third-party-notices.mjs (3MB+).

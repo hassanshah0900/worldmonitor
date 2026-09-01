@@ -41,6 +41,11 @@ variable "ssm_join_command_param" {
   type = string
 }
 
+variable "secrets_manager_secret_name" {
+  type        = string
+  description = "AWS Secrets Manager secret the external-secrets ClusterSecretStore reads from — workers need read access since that's where its pods run."
+}
+
 variable "min_size" {
   type = number
 }

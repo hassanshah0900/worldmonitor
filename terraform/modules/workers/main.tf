@@ -22,6 +22,9 @@ data "aws_caller_identity" "current" {}
 locals {
   ssm_param_arn = "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.ssm_join_command_param}"
   cluster_name  = "${var.project}-${var.environment}"
+  # "-??????" matches Secrets Manager's random 6-char ARN suffix without
+  # needing to know it ahead of time.
+  secrets_manager_secret_arn = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_manager_secret_name}-??????"
 }
 
 data "aws_iam_policy_document" "workers_assume_role" {
@@ -59,6 +62,23 @@ resource "aws_iam_role_policy" "workers_ssm" {
   name   = "ssm-read-join-param"
   role   = aws_iam_role.workers.id
   policy = data.aws_iam_policy_document.workers_ssm.json
+}
+
+# The external-secrets ClusterSecretStore has no explicit auth block — it
+# relies entirely on whatever credentials the pod's node grants via the AWS
+# SDK's default chain, which on EC2 means this instance profile.
+data "aws_iam_policy_document" "workers_secrets_manager" {
+  statement {
+    effect    = "Allow"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = [local.secrets_manager_secret_arn]
+  }
+}
+
+resource "aws_iam_role_policy" "workers_secrets_manager" {
+  name   = "secrets-manager-read"
+  role   = aws_iam_role.workers.id
+  policy = data.aws_iam_policy_document.workers_secrets_manager.json
 }
 
 # Cluster Autoscaler permissions. The Describe* actions don't support

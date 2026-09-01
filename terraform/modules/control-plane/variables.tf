@@ -46,3 +46,35 @@ variable "ssm_kubeconfig_param" {
   type        = string
   description = "SSM parameter name the control plane writes the base64 admin kubeconfig to."
 }
+
+variable "secrets_manager_secret_name" {
+  type        = string
+  description = "AWS Secrets Manager secret holding app config, including the GitHub token control-plane reads once at boot to bootstrap Flux."
+}
+
+variable "github_token_secret_key" {
+  type        = string
+  description = "Property name within secrets_manager_secret_name holding the GitHub PAT."
+}
+
+variable "flux_version" {
+  type        = string
+  description = "Must match the version the flux-system manifests in the repo (kubernetes/clusters/production/flux-system) were generated from."
+}
+
+variable "flux_github_owner" {
+  type = string
+}
+
+variable "flux_github_repo" {
+  type = string
+}
+
+variable "flux_github_branch" {
+  type = string
+}
+
+variable "flux_github_path" {
+  type        = string
+  description = "Path flux bootstrap reconciles, relative to the repo root."
+}

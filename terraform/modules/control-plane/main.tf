@@ -24,6 +24,9 @@ locals {
     "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.ssm_join_command_param}",
     "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.ssm_kubeconfig_param}",
   ]
+  # "-??????" matches Secrets Manager's random 6-char ARN suffix without
+  # needing to know it ahead of time.
+  secrets_manager_secret_arn = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_manager_secret_name}-??????"
 }
 
 data "aws_iam_policy_document" "control_plane_assume_role" {
@@ -63,6 +66,23 @@ resource "aws_iam_role_policy" "control_plane_ssm" {
   policy = data.aws_iam_policy_document.control_plane_ssm.json
 }
 
+# Used once at boot to fetch the GitHub PAT for `flux bootstrap` — that PAT
+# only authenticates the one-time GitHub API call that installs a deploy
+# key; it's never written to disk or stored in the cluster afterward.
+data "aws_iam_policy_document" "control_plane_secrets_manager" {
+  statement {
+    effect    = "Allow"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = [local.secrets_manager_secret_arn]
+  }
+}
+
+resource "aws_iam_role_policy" "control_plane_secrets_manager" {
+  name   = "secrets-manager-read"
+  role   = aws_iam_role.control_plane.id
+  policy = data.aws_iam_policy_document.control_plane_secrets_manager.json
+}
+
 resource "aws_iam_instance_profile" "control_plane" {
   name_prefix = "${var.project}-${var.environment}-cp-"
   role        = aws_iam_role.control_plane.name
@@ -78,11 +98,18 @@ resource "aws_instance" "control_plane" {
   associate_public_ip_address = true
 
   user_data = templatefile("${path.module}/templates/user-data.sh.tpl", {
-    aws_region              = var.aws_region
-    kubernetes_version      = var.kubernetes_version
-    pod_network_cidr        = var.pod_network_cidr
-    ssm_join_command_param  = var.ssm_join_command_param
-    ssm_kubeconfig_param    = var.ssm_kubeconfig_param
+    aws_region                  = var.aws_region
+    kubernetes_version          = var.kubernetes_version
+    pod_network_cidr            = var.pod_network_cidr
+    ssm_join_command_param      = var.ssm_join_command_param
+    ssm_kubeconfig_param        = var.ssm_kubeconfig_param
+    secrets_manager_secret_name = var.secrets_manager_secret_name
+    github_token_secret_key     = var.github_token_secret_key
+    flux_version                = var.flux_version
+    flux_github_owner           = var.flux_github_owner
+    flux_github_repo            = var.flux_github_repo
+    flux_github_branch          = var.flux_github_branch
+    flux_github_path            = var.flux_github_path
   })
 
   tags = {

@@ -3,6 +3,6 @@
 
 bucket         = "worldmonitor-tfstate-xxxxxxxx"
 key            = "production/terraform.tfstate"
-region         = "us-east-1"
+region         = "ap-south-1"
 dynamodb_table = "worldmonitor-tfstate-lock"
 encrypt        = true

@@ -1,10 +1,15 @@
 # Copy to terraform.tfvars (gitignored) and fill in real values.
 
-aws_region  = "us-east-1"
-azs         = ["us-east-1a", "us-east-1b"]
+aws_region  = "ap-south-1" # must match your worldmonitor Secrets Manager secret's region
+azs         = ["ap-south-1a", "ap-south-1b"]
 admin_cidrs = ["203.0.113.4/32"] # your IP, /32
 
 key_name = "your-existing-ec2-key-pair-name"
 
 # Optional — leave unset to run the ALB on HTTP:80 only.
-# acm_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/..."
+# acm_certificate_arn = "arn:aws:acm:ap-south-1:123456789012:certificate/..."
+
+# Before applying: add a GITHUB_PERSONAL_TOKEN key (repo scope) to the
+# "worldmonitor" Secrets Manager secret — control plane reads it once at
+# boot to bootstrap Flux. See secrets_manager_secret_name / github_token_secret_key
+# / flux_github_* in variables.tf if you need to override the defaults.

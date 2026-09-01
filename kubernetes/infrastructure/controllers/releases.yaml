@@ -37,6 +37,17 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: flux-system
+  values:
+    controller:
+      # No cloud-controller-manager on a self-managed cluster, so a
+      # Service type: LoadBalancer (the chart default) would sit Pending
+      # forever. Instead run one pod per node on the host network, so the
+      # ALB (terraform/modules/alb) can reach it on each worker's node IP.
+      kind: DaemonSet
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      service:
+        type: ClusterIP
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

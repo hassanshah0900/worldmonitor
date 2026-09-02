@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - repositories.yaml
   - releases.yaml
-  - local-path-provisioner.yaml
+  - gp3-storageclass.yaml

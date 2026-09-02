@@ -1,0 +1,13 @@
+# The aws-ebs-csi-driver EKS addon (terraform/modules/eks-cluster) doesn't
+# create a default StorageClass on its own — this is that.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete

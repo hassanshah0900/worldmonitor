@@ -18,10 +18,9 @@ spec:
         namespace: flux-system
   values:
     controller:
-      # No cloud-controller-manager on a self-managed cluster, so a
-      # Service type: LoadBalancer (the chart default) would sit Pending
-      # forever. Instead run one pod per node on the host network, so the
-      # ALB (terraform/modules/alb) can reach it on each worker's node IP.
+      # No AWS Load Balancer Controller — run one pod per node on the host
+      # network, so the ALB (terraform/modules/alb) can reach it on each
+      # node's IP directly via an instance-mode target group.
       kind: DaemonSet
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
@@ -46,6 +45,12 @@ spec:
         kind: HelmRepository
         name: external-secrets
         namespace: flux-system
+  values:
+    serviceAccount:
+      annotations:
+        # From terraform output external_secrets_role_arn — Flux can't read
+        # Terraform state, so this is a manual copy-in after apply.
+        eks.amazonaws.com/role-arn: "REPLACE_WITH_terraform_output_external_secrets_role_arn"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -58,10 +63,10 @@ spec:
   chart:
     spec:
       chart: cluster-autoscaler
-      # Chart 9.37.0 -> appVersion 1.30.0. Keep this matched to
+      # Chart 9.53.0 -> appVersion 1.34.2. Keep this matched to
       # terraform/environments/production's kubernetes_version — cluster-autoscaler
-      # only supports a small skew from the control-plane's k8s version.
-      version: 9.37.0
+      # only supports a small skew from the cluster's k8s version.
+      version: 9.53.0
       sourceRef:
         kind: HelmRepository
         name: autoscaler
@@ -69,15 +74,16 @@ spec:
   values:
     cloudProvider: aws
     # Must match terraform/environments/production's aws_region.
-    awsRegion: us-east-1
+    awsRegion: ap-south-1
     autoDiscovery:
       # Must match local.cluster_name ("${var.project}-${var.environment}")
-      # in terraform/modules/workers/main.tf — this is how the ASG tag
-      # k8s.io/cluster-autoscaler/<name>=owned gets discovered.
+      # in terraform/modules/eks-node-group/main.tf — this is how the node
+      # group's ASG tag k8s.io/cluster-autoscaler/<name>=owned gets discovered.
       clusterName: worldmonitor-production
-    # No OIDC/IRSA on a self-managed cluster — AWS credentials come from the
-    # worker node's EC2 instance profile (terraform/modules/workers), which
-    # already carries the scoped autoscaling IAM policy.
     rbac:
       serviceAccount:
         create: true
+        annotations:
+          # From terraform output cluster_autoscaler_role_arn — Flux can't
+          # read Terraform state, so this is a manual copy-in after apply.
+          eks.amazonaws.com/role-arn: "REPLACE_WITH_terraform_output_cluster_autoscaler_role_arn"

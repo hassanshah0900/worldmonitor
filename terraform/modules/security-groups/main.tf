@@ -145,6 +145,15 @@ resource "aws_security_group_rule" "workers_kubelet_self" {
   self              = true
 }
 
+resource "aws_security_group_rule" "workers_webhook_from_cp" {
+  type                     = "ingress"
+  security_group_id        = aws_security_group.workers.id
+  from_port                = 8443
+  to_port                  = 8443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.control_plane.id
+}
+
 resource "aws_security_group_rule" "workers_vxlan_from_cp" {
   type                     = "ingress"
   security_group_id        = aws_security_group.workers.id

@@ -1,27 +1,6 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: cert-manager
-  namespace: flux-system
-spec:
-  interval: 10m0s
-  targetNamespace: cert-manager
-  install:
-    createNamespace: true
-  chart:
-    spec:
-      chart: cert-manager
-      version: v1.16.2
-      sourceRef:
-        kind: HelmRepository
-        name: jetstack
-        namespace: flux-system
-  values:
-    installCRDs: true
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
   name: ingress-nginx
   namespace: flux-system
 spec:

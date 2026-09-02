@@ -38,7 +38,7 @@ variable "azs" {
 
 variable "admin_cidrs" {
   type        = list(string)
-  description = "CIDRs allowed to SSH and reach the Kubernetes API (e.g. [\"203.0.113.4/32\"] for your own IP). Required, no default — never leave this at 0.0.0.0/0."
+  description = "CIDRs allowed to reach the EKS cluster's public API endpoint (e.g. [\"203.0.113.4/32\"] for your own IP). Required, no default — never leave this at 0.0.0.0/0."
 }
 
 variable "key_name" {
@@ -48,17 +48,7 @@ variable "key_name" {
 
 variable "kubernetes_version" {
   type    = string
-  default = "1.30"
-}
-
-variable "pod_network_cidr" {
-  type    = string
-  default = "10.244.0.0/16"
-}
-
-variable "control_plane_instance_type" {
-  type    = string
-  default = "t3.small"
+  default = "1.34"
 }
 
 variable "worker_instance_type" {
@@ -90,37 +80,5 @@ variable "acm_certificate_arn" {
 variable "secrets_manager_secret_name" {
   type        = string
   default     = "worldmonitor"
-  description = "AWS Secrets Manager secret backing kubernetes/infrastructure/configs/secret-store/cluster-secret-store.yaml — also where control plane reads the GitHub PAT for flux bootstrap."
-}
-
-variable "github_token_secret_key" {
-  type        = string
-  default     = "GITHUB_PERSONAL_TOKEN"
-  description = "Property name within secrets_manager_secret_name holding the GitHub PAT (repo scope) used once at boot for flux bootstrap."
-}
-
-variable "flux_version" {
-  type        = string
-  default     = "2.9.4"
-  description = "Must match the version kubernetes/clusters/production/flux-system's manifests were generated from."
-}
-
-variable "flux_github_owner" {
-  type    = string
-  default = "hassanshah0900"
-}
-
-variable "flux_github_repo" {
-  type    = string
-  default = "worldmonitor"
-}
-
-variable "flux_github_branch" {
-  type    = string
-  default = "kubernetes"
-}
-
-variable "flux_github_path" {
-  type    = string
-  default = "./kubernetes/clusters/production"
+  description = "AWS Secrets Manager secret backing kubernetes/infrastructure/configs/secret-store/cluster-secret-store.yaml, read via IRSA."
 }

@@ -1,8 +1,8 @@
 # Copy to backend.hcl (gitignored) using the outputs from `terraform apply`
 # in ../../bootstrap, then run: terraform init -backend-config=backend.hcl
 
-bucket         = "worldmonitor-tfstate-xxxxxxxx"
-key            = "production/terraform.tfstate"
-region         = "ap-south-1"
-dynamodb_table = "worldmonitor-tfstate-lock"
-encrypt        = true
+bucket       = "worldmonitor-tfstate-xxxxxxxx"
+key          = "production/terraform.tfstate"
+region       = "ap-south-1"
+use_lockfile = true
+encrypt      = true

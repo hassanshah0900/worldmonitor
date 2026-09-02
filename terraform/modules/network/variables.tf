@@ -13,7 +13,7 @@ variable "vpc_cidr" {
 
 variable "public_subnet_cidrs" {
   type        = list(string)
-  description = "One CIDR per AZ. Holds the control plane and the ALB — anything that needs a public IP."
+  description = "One CIDR per AZ. Holds the ALB and EKS control-plane ENIs."
 }
 
 variable "private_subnet_cidrs" {
@@ -24,4 +24,9 @@ variable "private_subnet_cidrs" {
 variable "azs" {
   type        = list(string)
   description = "Availability zones, same length/order as public_subnet_cidrs and private_subnet_cidrs."
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "EKS cluster name, used for the kubernetes.io/cluster/<name> subnet discovery tag."
 }

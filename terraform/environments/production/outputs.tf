@@ -1,18 +1,16 @@
-output "control_plane_public_ip" {
-  value = module.control_plane.public_ip
+output "eks_cluster_name" {
+  description = "Fetch kubeconfig with: aws eks update-kubeconfig --name <this> --region <aws_region>"
+  value       = module.eks_cluster.cluster_name
 }
 
-output "control_plane_private_ip" {
-  value = module.control_plane.private_ip
+output "cluster_autoscaler_role_arn" {
+  description = "Copy into kubernetes/infrastructure/controllers/releases.yaml's cluster-autoscaler HelmRelease as rbac.serviceAccount.annotations['eks.amazonaws.com/role-arn'] — Flux can't read Terraform state."
+  value       = module.eks_cluster.cluster_autoscaler_role_arn
 }
 
-output "kubeconfig_ssm_parameter" {
-  description = "Fetch with: aws ssm get-parameter --with-decryption --name <this> --query Parameter.Value --output text | base64 -d > kubeconfig"
-  value       = local.ssm_kubeconfig_param
-}
-
-output "join_command_ssm_parameter" {
-  value = local.ssm_join_command_param
+output "external_secrets_role_arn" {
+  description = "Copy into kubernetes/infrastructure/controllers/releases.yaml's external-secrets HelmRelease as serviceAccount.annotations['eks.amazonaws.com/role-arn'] — Flux can't read Terraform state."
+  value       = module.eks_cluster.external_secrets_role_arn
 }
 
 output "vpc_id" {

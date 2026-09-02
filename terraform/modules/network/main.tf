@@ -24,7 +24,9 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.project}-${var.environment}-public-${var.azs[count.index]}"
+    Name                                        = "${var.project}-${var.environment}-public-${var.azs[count.index]}"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
   }
 }
 
@@ -55,7 +57,9 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "${var.project}-${var.environment}-private-${var.azs[count.index]}"
+    Name                                        = "${var.project}-${var.environment}-private-${var.azs[count.index]}"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"           = "1"
   }
 }
 

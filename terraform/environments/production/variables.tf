@@ -58,12 +58,12 @@ variable "pod_network_cidr" {
 
 variable "control_plane_instance_type" {
   type    = string
-  default = "t3.medium"
+  default = "t3.small"
 }
 
 variable "worker_instance_type" {
   type    = string
-  default = "t3.medium"
+  default = "t3.small"
 }
 
 variable "worker_min_size" {

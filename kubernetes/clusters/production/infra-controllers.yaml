@@ -27,3 +27,7 @@ spec:
       kind: HelmRelease
       name: cluster-autoscaler
       namespace: flux-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: local-path-provisioner
+      namespace: local-path-storage

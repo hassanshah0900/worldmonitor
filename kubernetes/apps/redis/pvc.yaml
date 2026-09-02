@@ -11,5 +11,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  # No storageClassName set — uses the cluster's default StorageClass.
-  # Set one explicitly if your cluster doesn't have a default.
+  storageClassName: local-path

@@ -96,6 +96,7 @@ resource "aws_instance" "control_plane" {
   key_name                    = var.key_name
   iam_instance_profile        = aws_iam_instance_profile.control_plane.name
   associate_public_ip_address = true
+  user_data_replace_on_change = true
 
   user_data = templatefile("${path.module}/templates/user-data.sh.tpl", {
     aws_region                  = var.aws_region

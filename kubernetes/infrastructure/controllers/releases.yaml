@@ -86,3 +86,56 @@ spec:
           # From terraform output cluster_autoscaler_role_arn — Flux can't
           # read Terraform state, so this is a manual copy-in after apply.
           eks.amazonaws.com/role-arn: "REPLACE_WITH_terraform_output_cluster_autoscaler_role_arn"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  targetNamespace: monitoring
+  install:
+    createNamespace: true
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 88.6.3
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    prometheus:
+      prometheusSpec:
+        retention: 15d
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: gp3
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 20Gi
+    grafana:
+      admin:
+        # From kubernetes/infrastructure/configs/monitoring's ExternalSecret
+        # (applied after this HelmRelease, since it needs both the
+        # external-secrets CRDs and the monitoring namespace to exist first).
+        existingSecret: grafana-admin-credentials
+        userKey: admin-user
+        passwordKey: admin-password
+      ingress:
+        enabled: true
+        ingressClassName: alb
+        annotations:
+          # Same ALB as kubernetes/apps/dashboard/shared/ingress.yaml —
+          # see that file's group.name annotation.
+          alb.ingress.kubernetes.io/group.name: worldmonitor
+          alb.ingress.kubernetes.io/scheme: internet-facing
+          alb.ingress.kubernetes.io/target-type: ip
+          alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+          alb.ingress.kubernetes.io/ssl-redirect: "443"
+          alb.ingress.kubernetes.io/certificate-arn: "REPLACE_WITH_your_acm_certificate_arn"
+        hosts:
+          - grafana.worldmonitor.alwahaj-ac-repair.com

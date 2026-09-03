@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   name: worldmonitor
   annotations:
+    # Shared with kubernetes/infrastructure/controllers/releases.yaml's
+    # kube-prometheus-stack HelmRelease (Grafana Ingress) — same group.name
+    # merges both into one ALB instead of provisioning two.
+    alb.ingress.kubernetes.io/group.name: worldmonitor
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'

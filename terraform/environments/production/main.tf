@@ -35,17 +35,6 @@ module "eks_cluster" {
   secrets_manager_secret_name = var.secrets_manager_secret_name
 }
 
-module "alb" {
-  source = "../../modules/alb"
-
-  project             = var.project
-  environment         = var.environment
-  vpc_id              = module.network.vpc_id
-  public_subnet_ids   = module.network.public_subnet_ids
-  security_group_id   = module.security_groups.alb_sg_id
-  acm_certificate_arn = var.acm_certificate_arn
-}
-
 module "eks_node_group" {
   source = "../../modules/eks-node-group"
 
@@ -60,5 +49,4 @@ module "eks_node_group" {
   min_size                  = var.worker_min_size
   max_size                  = var.worker_max_size
   desired_size              = var.worker_desired_size
-  target_group_arns         = [module.alb.target_group_arn]
 }

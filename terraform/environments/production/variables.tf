@@ -71,12 +71,6 @@ variable "worker_desired_size" {
   default = 2
 }
 
-variable "acm_certificate_arn" {
-  type        = string
-  default     = ""
-  description = "ACM cert ARN for the ALB's HTTPS listener. Left empty, the ALB only serves HTTP:80 (no TLS at the edge)."
-}
-
 variable "secrets_manager_secret_name" {
   type        = string
   default     = "worldmonitor"

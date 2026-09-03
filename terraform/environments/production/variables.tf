@@ -21,19 +21,19 @@ variable "vpc_cidr" {
 
 variable "public_subnet_cidrs" {
   type    = list(string)
-  default = ["10.60.1.0/24", "10.60.2.0/24"]
+  default = ["10.60.1.0/24", "10.60.2.0/24", "10.60.3.0/24"]
 }
 
 variable "private_subnet_cidrs" {
   type        = list(string)
   description = "Must match length/order of public_subnet_cidrs and azs. Worker nodes live here."
-  default     = ["10.60.11.0/24", "10.60.12.0/24"]
+  default     = ["10.60.11.0/24", "10.60.12.0/24", "10.60.13.0/24"]
 }
 
 variable "azs" {
   type        = list(string)
   description = "Must match length/order of public_subnet_cidrs and private_subnet_cidrs, and be valid AZs for aws_region."
-  default     = ["ap-south-1a", "ap-south-1b"]
+  default     = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
 }
 
 variable "admin_cidrs" {

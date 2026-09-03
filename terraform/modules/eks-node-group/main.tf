@@ -85,9 +85,3 @@ resource "aws_eks_node_group" "this" {
     ignore_changes = [scaling_config[0].desired_size]
   }
 }
-
-resource "aws_autoscaling_attachment" "alb" {
-  count                  = length(var.target_group_arns)
-  autoscaling_group_name = aws_eks_node_group.this.resources[0].autoscaling_groups[0].name
-  lb_target_group_arn    = var.target_group_arns[count.index]
-}

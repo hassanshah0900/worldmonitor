@@ -208,6 +208,47 @@ resource "aws_iam_role_policy" "external_secrets" {
   policy = data.aws_iam_policy_document.external_secrets.json
 }
 
+# --- IRSA: aws-load-balancer-controller ---
+
+data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.this.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_provider_host}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_provider_host}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "aws_load_balancer_controller" {
+  name_prefix        = "${local.cluster_name}-alb-controller-"
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role.json
+}
+
+resource "aws_iam_policy" "aws_load_balancer_controller" {
+  name_prefix = "${local.cluster_name}-alb-controller-"
+  policy      = file("${path.module}/policies/aws-load-balancer-controller-iam-policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller" {
+  role       = aws_iam_role.aws_load_balancer_controller.name
+  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+}
+
 # --- addons ---
 
 resource "aws_eks_addon" "vpc_cni" {

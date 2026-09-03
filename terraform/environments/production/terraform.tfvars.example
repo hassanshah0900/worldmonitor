@@ -6,11 +6,11 @@ admin_cidrs = ["203.0.113.4/32"] # your IP, /32
 
 key_name = "your-existing-ec2-key-pair-name"
 
-# Optional — leave unset to run the ALB on HTTP:80 only.
-# acm_certificate_arn = "arn:aws:acm:ap-south-1:123456789012:certificate/..."
-
 # After applying: aws eks update-kubeconfig --name <eks_cluster_name output> --region ap-south-1
 # then run `flux bootstrap github` once by hand — see the plan/session notes
-# for the exact command. Also copy cluster_autoscaler_role_arn and
-# external_secrets_role_arn from `terraform output` into the matching
-# kubernetes/ manifests (Flux can't read Terraform state).
+# for the exact command. Also copy cluster_autoscaler_role_arn,
+# external_secrets_role_arn, aws_load_balancer_controller_role_arn, and
+# vpc_id from `terraform output` into the matching kubernetes/ manifests
+# (Flux can't read Terraform state), and paste your ACM cert ARN directly
+# into kubernetes/apps/dashboard/shared/ingress.yaml's certificate-arn
+# annotation.

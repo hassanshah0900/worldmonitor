@@ -13,11 +13,12 @@ output "external_secrets_role_arn" {
   value       = module.eks_cluster.external_secrets_role_arn
 }
 
-output "vpc_id" {
-  value = module.network.vpc_id
+output "aws_load_balancer_controller_role_arn" {
+  description = "Copy into kubernetes/infrastructure/controllers/releases.yaml's aws-load-balancer-controller HelmRelease as serviceAccount.annotations['eks.amazonaws.com/role-arn'] — Flux can't read Terraform state."
+  value       = module.eks_cluster.aws_load_balancer_controller_role_arn
 }
 
-output "alb_dns_name" {
-  description = "Point your app's DNS record here (CNAME/ALIAS)."
-  value       = module.alb.dns_name
+output "vpc_id" {
+  description = "Copy into kubernetes/infrastructure/controllers/releases.yaml's aws-load-balancer-controller HelmRelease as values.vpcId — Flux can't read Terraform state."
+  value       = module.network.vpc_id
 }

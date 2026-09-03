@@ -33,12 +33,6 @@ variable "key_name" {
   type = string
 }
 
-variable "target_group_arns" {
-  type        = list(string)
-  default     = []
-  description = "ALB target group ARN(s) to attach the node group's underlying ASG to."
-}
-
 variable "min_size" {
   type = number
 }

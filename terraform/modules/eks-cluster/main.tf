@@ -5,6 +5,10 @@ locals {
   # "-??????" matches Secrets Manager's random 6-char ARN suffix without
   # needing to know it ahead of time.
   secrets_manager_secret_arn = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_manager_secret_name}-??????"
+  # aws_iam_role name_prefix is capped at 38 chars (64 - 26 reserved for
+  # Terraform's random suffix) — too little room for cluster_name plus the
+  # longer controller names below.
+  iam_role_prefix = "wm-${var.environment}"
 }
 
 data "aws_iam_policy_document" "cluster_assume_role" {
@@ -121,7 +125,7 @@ data "aws_iam_policy_document" "cluster_autoscaler_assume_role" {
 }
 
 resource "aws_iam_role" "cluster_autoscaler" {
-  name_prefix        = "${local.cluster_name}-cluster-autoscaler-"
+  name_prefix        = "${local.iam_role_prefix}-cluster-autoscaler-"
   assume_role_policy = data.aws_iam_policy_document.cluster_autoscaler_assume_role.json
 }
 
@@ -190,7 +194,7 @@ data "aws_iam_policy_document" "external_secrets_assume_role" {
 }
 
 resource "aws_iam_role" "external_secrets" {
-  name_prefix        = "${local.cluster_name}-external-secrets-"
+  name_prefix        = "${local.iam_role_prefix}-external-secrets-"
   assume_role_policy = data.aws_iam_policy_document.external_secrets_assume_role.json
 }
 
@@ -235,7 +239,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role" {
 }
 
 resource "aws_iam_role" "aws_load_balancer_controller" {
-  name_prefix        = "${local.cluster_name}-alb-controller-"
+  name_prefix        = "${local.iam_role_prefix}-alb-controller-"
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role.json
 }
 

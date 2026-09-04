@@ -76,3 +76,8 @@ variable "secrets_manager_secret_name" {
   default     = "worldmonitor"
   description = "AWS Secrets Manager secret backing kubernetes/infrastructure/configs/secret-store/cluster-secret-store.yaml, read via IRSA."
 }
+
+variable "acm_certificate_arn" {
+  type        = string
+  description = "ARN of the manually-requested ACM certificate for the dashboard's ALB. Terraform doesn't create this certificate, just passes it through to the flux-system/terraform-outputs ConfigMap."
+}

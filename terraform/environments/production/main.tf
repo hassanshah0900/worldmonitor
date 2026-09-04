@@ -68,5 +68,6 @@ resource "kubernetes_config_map" "flux_substitutions" {
     EXTERNAL_SECRETS_ROLE_ARN             = module.eks_cluster.external_secrets_role_arn
     AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN = module.eks_cluster.aws_load_balancer_controller_role_arn
     VPC_ID                                = module.network.vpc_id
+    CERTIFICATE_ARN                       = var.acm_certificate_arn
   }
 }

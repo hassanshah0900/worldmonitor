@@ -107,6 +107,11 @@ metadata:
 spec:
   interval: 10m0s
   targetNamespace: monitoring
+  # cluster-autoscaler must already be functioning before this installs —
+  # its multi-pod install (prometheus, alertmanager, grafana, an
+  # admission-webhook Job) can exceed current node capacity.
+  dependsOn:
+    - name: cluster-autoscaler
   install:
     createNamespace: true
   chart:

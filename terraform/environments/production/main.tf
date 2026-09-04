@@ -51,11 +51,16 @@ module "eks_node_group" {
   desired_size              = var.worker_desired_size
 }
 
-# Requires the flux-system namespace to already exist (created by `flux bootstrap`).
+resource "kubernetes_namespace" "flux_system" {
+  metadata {
+    name = "flux-system"
+  }
+}
+
 resource "kubernetes_config_map" "flux_substitutions" {
   metadata {
     name      = "terraform-outputs"
-    namespace = "flux-system"
+    namespace = kubernetes_namespace.flux_system.metadata[0].name
   }
 
   data = {

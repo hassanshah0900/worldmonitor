@@ -14,6 +14,14 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.30"
     }
+    flux = {
+      source  = "fluxcd/flux"
+      version = "~> 1.0"
+    }
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
   }
 
   # Values intentionally left blank here — backend blocks can't reference

@@ -10,9 +10,11 @@ key_name = "your-existing-ec2-key-pair-name"
 # in aws_region above.
 acm_certificate_arn = "arn:aws:acm:ap-south-1:123456789012:certificate/00000000-0000-0000-0000-000000000000"
 
-# After applying: aws eks update-kubeconfig --name <eks_cluster_name output> --region ap-south-1
-# then run `flux bootstrap github` once by hand — see the plan/session notes
-# for the exact command. Flux picks up cluster_autoscaler_role_arn,
+# terraform apply now does everything: creates the cluster, generates and
+# registers Flux's deploy key (GitHub PAT with repo + deploy-key-write scope,
+# read from the worldmonitor Secrets Manager secret's GITHUB_PERSONAL_TOKEN
+# property — not a Terraform variable), bootstraps Flux, and writes the
+# flux-system/terraform-outputs ConfigMap (cluster_autoscaler_role_arn,
 # external_secrets_role_arn, aws_load_balancer_controller_role_arn, vpc_id,
-# and acm_certificate_arn automatically via the flux-system/terraform-outputs
-# ConfigMap — no manual copy-in needed.
+# acm_certificate_arn). Only manual step left:
+# aws eks update-kubeconfig --name <eks_cluster_name output> --region ap-south-1

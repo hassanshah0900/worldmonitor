@@ -23,6 +23,11 @@ spec:
     # which Terraform writes on every apply.
     vpcId: "${VPC_ID}"
     serviceAccount:
+      # Must match terraform/modules/eks-cluster/main.tf's IRSA trust policy
+      # condition for aws_load_balancer_controller_assume_role — without
+      # this, Flux/Helm default the name to
+      # kube-system-aws-load-balancer-controller instead.
+      name: aws-load-balancer-controller
       annotations:
         eks.amazonaws.com/role-arn: "${AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN}"
 ---
@@ -46,6 +51,12 @@ spec:
         namespace: flux-system
   values:
     serviceAccount:
+      # Must match terraform/modules/eks-cluster/main.tf's IRSA trust policy
+      # condition for external_secrets_assume_role (also referenced by
+      # kubernetes/infrastructure/configs/secret-store/cluster-secret-store.yaml's
+      # serviceAccountRef) — without this, Flux/Helm default the name to
+      # external-secrets-external-secrets instead.
+      name: external-secrets
       annotations:
         eks.amazonaws.com/role-arn: "${EXTERNAL_SECRETS_ROLE_ARN}"
 ---

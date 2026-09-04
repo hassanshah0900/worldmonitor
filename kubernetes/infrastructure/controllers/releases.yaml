@@ -18,13 +18,13 @@ spec:
     clusterName: worldmonitor-production
     # Must match terraform/environments/production's aws_region.
     region: ap-south-1
-    # From terraform output vpc_id — Flux can't read Terraform state.
-    vpcId: "REPLACE_WITH_terraform_output_vpc_id"
+    # Substituted by Flux from the flux-system/terraform-outputs ConfigMap
+    # (see kubernetes/clusters/production/infra-controllers.yaml's postBuild),
+    # which Terraform writes on every apply.
+    vpcId: "${VPC_ID}"
     serviceAccount:
       annotations:
-        # From terraform output aws_load_balancer_controller_role_arn — Flux
-        # can't read Terraform state, so this is a manual copy-in after apply.
-        eks.amazonaws.com/role-arn: "REPLACE_WITH_terraform_output_aws_load_balancer_controller_role_arn"
+        eks.amazonaws.com/role-arn: "${AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN}"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -47,9 +47,7 @@ spec:
   values:
     serviceAccount:
       annotations:
-        # From terraform output external_secrets_role_arn — Flux can't read
-        # Terraform state, so this is a manual copy-in after apply.
-        eks.amazonaws.com/role-arn: "REPLACE_WITH_terraform_output_external_secrets_role_arn"
+        eks.amazonaws.com/role-arn: "${EXTERNAL_SECRETS_ROLE_ARN}"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -83,9 +81,7 @@ spec:
       serviceAccount:
         create: true
         annotations:
-          # From terraform output cluster_autoscaler_role_arn — Flux can't
-          # read Terraform state, so this is a manual copy-in after apply.
-          eks.amazonaws.com/role-arn: "REPLACE_WITH_terraform_output_cluster_autoscaler_role_arn"
+          eks.amazonaws.com/role-arn: "${CLUSTER_AUTOSCALER_ROLE_ARN}"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

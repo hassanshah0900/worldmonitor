@@ -10,6 +10,10 @@ spec:
   sourceRef:
     kind: GitRepository
     name: worldmonitor
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: terraform-outputs
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease

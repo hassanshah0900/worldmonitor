@@ -76,7 +76,7 @@ resource "flux_bootstrap_git" "this" {
   path = local.flux_manifest_path
   # kubernetes/clusters/production/image-*.yaml use these CRDs.
   components_extra = ["image-reflector-controller", "image-automation-controller"]
-  depends_on       = [github_repository_deploy_key.flux, module.eks_node_group]
+  depends_on       = [github_repository_deploy_key.flux, module.eks_cluster, module.eks_node_group]
 }
 
 resource "kubernetes_config_map" "flux_substitutions" {

@@ -11,7 +11,7 @@ spec:
     branch: kubernetes
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/hassanshah0900/worldmonitor
+  url: ssh://git@github.com/hassanshah0900/worldmonitor.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

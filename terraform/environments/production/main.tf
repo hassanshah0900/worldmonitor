@@ -1,5 +1,14 @@
+data "aws_secretsmanager_secret_version" "worldmonitor" {
+  secret_id = var.secrets_manager_secret_name
+}
+
 locals {
-  cluster_name = "${var.project}-${var.environment}"
+  cluster_name         = "${var.project}-${var.environment}"
+  github_owner         = "hassanshah0900"
+  github_repository    = "worldmonitor"
+  flux_git_branch      = "kubernetes"
+  flux_manifest_path   = "./kubernetes/clusters/production"
+  worldmonitor_secrets = jsondecode(data.aws_secretsmanager_secret_version.worldmonitor.secret_string)
 }
 
 module "network" {
@@ -51,17 +60,32 @@ module "eks_node_group" {
   desired_size              = var.worker_desired_size
 }
 
-resource "kubernetes_namespace" "flux_system" {
-  metadata {
-    name = "flux-system"
-  }
+resource "tls_private_key" "flux" {
+  algorithm   = "ECDSA"
+  ecdsa_curve = "P256"
+}
+
+resource "github_repository_deploy_key" "flux" {
+  title      = "flux-${local.cluster_name}"
+  repository = local.github_repository
+  key        = tls_private_key.flux.public_key_openssh
+  read_only  = false
+}
+
+resource "flux_bootstrap_git" "this" {
+  path = local.flux_manifest_path
+  # kubernetes/clusters/production/image-*.yaml use these CRDs.
+  components_extra = ["image-reflector-controller", "image-automation-controller"]
+  depends_on       = [github_repository_deploy_key.flux, module.eks_node_group]
 }
 
 resource "kubernetes_config_map" "flux_substitutions" {
   metadata {
     name      = "terraform-outputs"
-    namespace = kubernetes_namespace.flux_system.metadata[0].name
+    namespace = "flux-system"
   }
+
+  depends_on = [flux_bootstrap_git.this]
 
   data = {
     CLUSTER_AUTOSCALER_ROLE_ARN           = module.eks_cluster.cluster_autoscaler_role_arn

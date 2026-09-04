@@ -80,6 +80,11 @@ spec:
     rbac:
       serviceAccount:
         create: true
+        # Must match terraform/modules/eks-cluster/main.tf's IRSA trust
+        # policy condition for cluster_autoscaler_assume_role — without
+        # this, Flux/Helm default the name to
+        # kube-system-cluster-autoscaler-aws-cluster-autoscaler instead.
+        name: cluster-autoscaler
         annotations:
           eks.amazonaws.com/role-arn: "${CLUSTER_AUTOSCALER_ROLE_ARN}"
 ---

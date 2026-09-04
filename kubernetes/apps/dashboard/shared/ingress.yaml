@@ -11,8 +11,10 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
-    # Paste your ACM cert ARN here directly — Terraform no longer manages the ALB.
-    alb.ingress.kubernetes.io/certificate-arn: "REPLACE_WITH_your_acm_certificate_arn"
+    # Substituted by Flux from the flux-system/terraform-outputs ConfigMap
+    # (see kubernetes/clusters/production/apps.yaml's postBuild), which
+    # Terraform writes from var.acm_certificate_arn on every apply.
+    alb.ingress.kubernetes.io/certificate-arn: "${CERTIFICATE_ARN}"
 spec:
   ingressClassName: alb
   rules:

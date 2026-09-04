@@ -13,3 +13,7 @@ spec:
     name: worldmonitor
   dependsOn:
     - name: worldmonitor-infra-configs
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: terraform-outputs

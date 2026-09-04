@@ -50,3 +50,18 @@ module "eks_node_group" {
   max_size                  = var.worker_max_size
   desired_size              = var.worker_desired_size
 }
+
+# Requires the flux-system namespace to already exist (created by `flux bootstrap`).
+resource "kubernetes_config_map" "flux_substitutions" {
+  metadata {
+    name      = "terraform-outputs"
+    namespace = "flux-system"
+  }
+
+  data = {
+    CLUSTER_AUTOSCALER_ROLE_ARN           = module.eks_cluster.cluster_autoscaler_role_arn
+    EXTERNAL_SECRETS_ROLE_ARN             = module.eks_cluster.external_secrets_role_arn
+    AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN = module.eks_cluster.aws_load_balancer_controller_role_arn
+    VPC_ID                                = module.network.vpc_id
+  }
+}

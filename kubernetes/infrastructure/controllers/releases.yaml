@@ -153,6 +153,9 @@ spec:
           alb.ingress.kubernetes.io/target-type: ip
           alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
           alb.ingress.kubernetes.io/ssl-redirect: "443"
-          alb.ingress.kubernetes.io/certificate-arn: "REPLACE_WITH_your_acm_certificate_arn"
+          # Same cert as kubernetes/apps/dashboard/shared/ingress.yaml — its
+          # wildcard SAN (*.worldmonitor.alwahaj-ac-repair.com) already
+          # covers this host, and it's the same ALB group.
+          alb.ingress.kubernetes.io/certificate-arn: "${CERTIFICATE_ARN}"
         hosts:
           - grafana.worldmonitor.alwahaj-ac-repair.com

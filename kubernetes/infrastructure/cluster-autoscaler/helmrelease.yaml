@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cluster-autoscaler
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  targetNamespace: kube-system
+  chart:
+    spec:
+      chart: cluster-autoscaler
+      # Chart 9.53.0 -> appVersion 1.34.2. Keep this matched to
+      # terraform/environments/production's kubernetes_version — cluster-autoscaler
+      # only supports a small skew from the cluster's k8s version.
+      version: 9.53.0
+      sourceRef:
+        kind: HelmRepository
+        name: autoscaler
+        namespace: flux-system
+  values:
+    cloudProvider: aws
+    # Must match terraform/environments/production's aws_region.
+    awsRegion: ap-south-1
+    autoDiscovery:
+      # Must match local.cluster_name ("${var.project}-${var.environment}")
+      # in terraform/modules/eks-node-group/main.tf — this is how the node
+      # group's ASG tag k8s.io/cluster-autoscaler/<name>=owned gets discovered.
+      clusterName: worldmonitor-production
+    rbac:
+      serviceAccount:
+        create: true
+        # Must match terraform/modules/eks-cluster/main.tf's IRSA trust
+        # policy condition for cluster_autoscaler_assume_role — without
+        # this, Flux/Helm default the name to
+        # kube-system-cluster-autoscaler-aws-cluster-autoscaler instead.
+        name: cluster-autoscaler
+        annotations:
+          eks.amazonaws.com/role-arn: "${CLUSTER_AUTOSCALER_ROLE_ARN}"

@@ -6,6 +6,5 @@ resources:
 - image-repositories.yaml
 - image-policies.yaml
 - image-update-automation.yaml
-- infra-controllers.yaml
-- infra-configs.yaml
+- infra.yaml
 - apps.yaml

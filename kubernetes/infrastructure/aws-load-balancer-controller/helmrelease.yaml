@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: aws-load-balancer-controller
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  targetNamespace: kube-system
+  chart:
+    spec:
+      chart: aws-load-balancer-controller
+      version: 3.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: eks-charts
+        namespace: flux-system
+  values:
+    clusterName: worldmonitor-production
+    # Must match terraform/environments/production's aws_region.
+    region: ap-south-1
+    # Substituted by Flux from the flux-system/terraform-outputs ConfigMap
+    # (see kubernetes/clusters/production/infra-aws-load-balancer-controller.yaml's
+    # postBuild), which Terraform writes on every apply.
+    vpcId: "${VPC_ID}"
+    serviceAccount:
+      # Must match terraform/modules/eks-cluster/main.tf's IRSA trust policy
+      # condition for aws_load_balancer_controller_assume_role — without
+      # this, Flux/Helm default the name to
+      # kube-system-aws-load-balancer-controller instead.
+      name: aws-load-balancer-controller
+      annotations:
+        eks.amazonaws.com/role-arn: "${AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN}"

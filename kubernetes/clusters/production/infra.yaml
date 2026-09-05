@@ -1,0 +1,142 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-aws-load-balancer-controller
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/aws-load-balancer-controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: terraform-outputs
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: aws-load-balancer-controller
+      namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-external-secrets
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/external-secrets
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: terraform-outputs
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: external-secrets
+      namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-external-secrets-config
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/external-secrets/config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor
+  # ClusterSecretStore is a CRD instance installed by the external-secrets
+  # chart — applying it before that CRD is registered fails outright, so
+  # this waits for worldmonitor-infra-external-secrets to be Ready.
+  dependsOn:
+    - name: worldmonitor-infra-external-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-cluster-autoscaler
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/cluster-autoscaler
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: terraform-outputs
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: cluster-autoscaler
+      namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-kube-prometheus-stack
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/kube-prometheus-stack
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor
+  # This chart's multi-pod install (prometheus, alertmanager, grafana, an
+  # admission-webhook Job) can exceed current node capacity without
+  # cluster-autoscaler already running.
+  dependsOn:
+    - name: worldmonitor-infra-cluster-autoscaler
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: terraform-outputs
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: kube-prometheus-stack
+      namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-kube-prometheus-stack-config
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/kube-prometheus-stack/config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor
+  # grafana-external-secret.yaml needs the monitoring namespace (created by
+  # kube-prometheus-stack's HelmRelease) and the ClusterSecretStore
+  # (external-secrets-config) to both already exist.
+  dependsOn:
+    - name: worldmonitor-infra-kube-prometheus-stack
+    - name: worldmonitor-infra-external-secrets-config
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: worldmonitor-infra-storage
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/storage
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: worldmonitor

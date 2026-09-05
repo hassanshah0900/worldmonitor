@@ -11,8 +11,13 @@ spec:
   sourceRef:
     kind: GitRepository
     name: worldmonitor
+  # external-secrets-config: apps' own ExternalSecrets (redis, redis-rest,
+  # ais-relay, dashboard) reference the ClusterSecretStore it creates.
+  # aws-load-balancer-controller: apps' Ingress (dashboard) needs it running
+  # to reconcile into a real ALB.
   dependsOn:
-    - name: worldmonitor-infra-configs
+    - name: worldmonitor-infra-external-secrets-config
+    - name: worldmonitor-infra-aws-load-balancer-controller
   postBuild:
     substituteFrom:
       - kind: ConfigMap

@@ -126,11 +126,10 @@ spec:
   sourceRef:
     kind: GitRepository
     name: worldmonitor
-  # grafana-external-secret.yaml needs the monitoring namespace (created by
-  # kube-prometheus-stack's HelmRelease) and the ClusterSecretStore
-  # (external-secrets-config) to both already exist.
+  # grafana-external-secret.yaml needs the ClusterSecretStore
+  # (external-secrets-config) and the monitoring namespace, which Helm
+  # creates immediately on apply, well before pod readiness.
   dependsOn:
-    - name: worldmonitor-infra-kube-prometheus-stack
     - name: worldmonitor-infra-external-secrets-config
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

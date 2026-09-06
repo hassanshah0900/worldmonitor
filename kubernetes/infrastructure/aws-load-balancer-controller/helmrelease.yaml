@@ -23,10 +23,6 @@ spec:
     # postBuild), which Terraform writes on every apply.
     vpcId: "${VPC_ID}"
     serviceAccount:
-      # Must match terraform/modules/eks-cluster/main.tf's IRSA trust policy
-      # condition for aws_load_balancer_controller_assume_role — without
-      # this, Flux/Helm default the name to
-      # kube-system-aws-load-balancer-controller instead.
       name: aws-load-balancer-controller
       annotations:
         eks.amazonaws.com/role-arn: "${AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN}"

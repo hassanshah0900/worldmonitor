@@ -18,11 +18,6 @@ spec:
         namespace: flux-system
   values:
     serviceAccount:
-      # Must match terraform/modules/eks-cluster/main.tf's IRSA trust policy
-      # condition for external_secrets_assume_role (also referenced by
-      # ./config/cluster-secret-store.yaml's serviceAccountRef) — without
-      # this, Flux/Helm default the name to external-secrets-external-secrets
-      # instead.
       name: external-secrets
       annotations:
         eks.amazonaws.com/role-arn: "${EXTERNAL_SECRETS_ROLE_ARN}"

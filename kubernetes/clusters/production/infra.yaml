@@ -32,6 +32,11 @@ spec:
   sourceRef:
     kind: GitRepository
     name: worldmonitor
+  # The ALB controller chart installs a mutating webhook that intercepts
+  # every Service creation in the cluster. external-secrets creates its own
+  # Service, so it needs the ALB controller running first.
+  dependsOn:
+    - name: worldmonitor-infra-aws-load-balancer-controller
   postBuild:
     substituteFrom:
       - kind: ConfigMap
